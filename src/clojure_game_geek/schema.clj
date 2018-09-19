@@ -63,8 +63,9 @@
                      slurp
                      edn/read-string)
         games-map (entity-map cgg-data :games)
+        members-map (entity-map cgg-data :members)
         designers-map (entity-map cgg-data :designers)]
-    {:query/game-by-id (partial resolve-game-by-id games-map)
+    {:query/game-by-id (partial resolve-element-by-id games-map)
      :query/member-by-id (partial resolve-element-by-id members-map)
      :BoardGame/designers (partial resolve-board-game-designers designers-map)
      :BoardGame/rating-summary (rating-summary cgg-data)
