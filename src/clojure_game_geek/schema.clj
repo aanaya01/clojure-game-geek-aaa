@@ -47,7 +47,7 @@
   (-> (io/resource "cgg-schema.edn")
       slurp
       edn/read-string
-      (util/attach-resolvers (resolver-map))
+      (util/attach-resolvers (resolver-map component))
       schema/compile))
 
 (defrecord SchemaProvider [schema]
