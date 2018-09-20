@@ -1,6 +1,5 @@
 (ns clojure-game-geek.db
   (:require
-    [clojure.edn :as edn]
     [clojure.java.io :as io]
     [com.stuartsierra.component :as component]
     [postgres.async :refer [open-db query! close-db!]]
@@ -12,12 +11,12 @@
 
   (start [this]
     (assoc this
-           :conn (open-db {:hostname "localhost"}
+           :conn (open-db {:hostname "localhost"
                          :database "cggdb"
                          :username "cgg_role"
                          :password "lacinia"
                          ;; Host port mapped to 5432 in the container
-                         :port 25432)))
+                         :port 25432})))
 
   (stop [this]
     (close-db! conn)
@@ -43,43 +42,43 @@
       first))
 
 (defn find-member-by-id
-  [db member-id]
-  (->> db
-       :data
+  [component member-id]
+  (->> component
+       :db
        deref
        :members
        (filter #(= member-id (:id %)))
        first))
 
 (defn list-designers-for-game
-  [db game-id]
-  (let [designers (:designers (find-game-by-id db game-id))]
-    (->> db
-         :data
+  [component game-id]
+  (let [designers (:designers (find-game-by-id component game-id))]
+    (->> component
+         :db
          deref
          :designers
          (filter #(contains? designers (:id %))))))
 
 (defn list-games-for-designer
-  [db designer-id]
-  (->> db
-       :data
+  [component designer-id]
+  (->> component
+       :db
        deref
        :games
        (filter #(-> % :designers (contains? designer-id)))))
 
 (defn list-ratings-for-game
-  [db game-id]
-  (->> db
-       :data
+  [component game-id]
+  (->> component
+       :db
        deref
        :ratings
        (filter #(= game-id (:game_id %)))))
 
 (defn list-ratings-for-member
-  [db member-id]
-  (->> db
-       :data
+  [component member-id]
+  (->> component
+       :db
        deref
        :ratings
        (filter #(= member-id (:member_id %)))))
@@ -97,5 +96,5 @@
   "Adds a new game rating, or changes the value of an existing game rating."
   [db game-id member-id rating]
   (-> db
-      :data
+      :db
       (swap! update :ratings apply-game-rating game-id member-id rating)))
