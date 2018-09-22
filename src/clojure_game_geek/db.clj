@@ -11,12 +11,12 @@
 
   (start [this]
     (assoc this
-           :conn (open-db {:hostname "localhost"
+           :conn (open-db {:hostname "127.0.0.1"}
                          :database "cggdb"
                          :username "cgg_role"
                          :password "lacinia"
                          ;; Host port mapped to 5432 in the container
-                         :port 25432})))
+                         :port 25432)))
 
   (stop [this]
     (close-db! conn)
