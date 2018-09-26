@@ -11,12 +11,12 @@
 
   (start [this]
     (assoc this
-           :conn (open-db {:hostname "127.0.0.1"}
+           :conn (open-db {:hostname "localhost"
                          :database "cggdb"
                          :username "cgg_role"
                          :password "lacinia"
                          ;; Host port mapped to 5432 in the container
-                         :port 25432)))
+                         :port 25432})))
 
   (stop [this]
     (close-db! conn)
@@ -36,7 +36,8 @@
 (defn find-game-by-id
   [component game-id]
   (-> (query! (:conn component)
-              ["select game_id, name, summary, min_players, max_players, created_at, updated_at
+              ["select game_id, name, summary, min_players, max_players, 
+created_at, updated_at
                from board_game where game_id = $1" game-id])
       take!
       first))
